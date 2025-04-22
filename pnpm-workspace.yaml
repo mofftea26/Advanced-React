@@ -1,4 +1,11 @@
 packages:
-  - "client"
-  - "server"
-  - "shared"
+  - client
+  - server
+  - shared
+
+ignoredBuiltDependencies:
+  - better-sqlite3
+  - esbuild
+
+onlyBuiltDependencies:
+  - better-sqlite3
