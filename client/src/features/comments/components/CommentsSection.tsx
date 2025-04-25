@@ -1,0 +1,36 @@
+import { trpc } from "@/trpc";
+import { Experience } from "@advanced-react/server/database/schema";
+import { CommentsList } from "./CommentsList";
+
+type CommentsSectionProps = {
+  experienceId: Experience["id"];
+  commentsCount: number;
+};
+
+export function CommentsSection({
+  experienceId,
+  commentsCount,
+}: CommentsSectionProps) {
+  const commentsQuery = trpc.comments.byExperienceId.useQuery(
+    {
+      experienceId,
+    },
+    { enabled: commentsCount > 0 },
+  );
+
+  if (commentsQuery.error) {
+    return <div>Error loading comments</div>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <h3 className="font-semibold">Comments ({commentsCount})</h3>
+      <div className="space-y-4">
+        <CommentsList
+          comments={commentsQuery.data ?? []}
+          isLoading={commentsQuery.isLoading}
+        />
+      </div>
+    </div>
+  );
+}
