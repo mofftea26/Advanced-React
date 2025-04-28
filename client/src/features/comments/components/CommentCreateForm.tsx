@@ -4,7 +4,7 @@ import {
   FormField,
   FormItem,
 } from "@/features/shared/components/ui/Form";
-import { trpc } from "@/trpc";
+import { trpc } from "@/router";
 import { Experience } from "@advanced-react/server/database/schema";
 import { commentValidationSchema } from "@advanced-react/shared/schema/comment";
 import { zodResolver } from "@hookform/resolvers/zod";
