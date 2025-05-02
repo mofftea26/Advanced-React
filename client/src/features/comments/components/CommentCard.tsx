@@ -13,6 +13,8 @@ import { DialogTrigger } from "@/features/shared/components/ui/Dialog";
 import { DialogContent } from "@/features/shared/components/ui/Dialog";
 import { trpc } from "@/router";
 import { useToast } from "@/features/shared/hooks/useToast";
+import { UserAvatar } from "@/features/users/components/UserAvatar";
+import { Link } from "@tanstack/react-router";
 
 type CommentCardProps = {
   comment: CommentForList;
@@ -37,7 +39,9 @@ type CommentCardHeaderProps = Pick<CommentCardProps, "comment">;
 function CommentCardHeader({ comment }: CommentCardHeaderProps) {
   return (
     <div className="flex items-center gap-2">
-      <div>{comment.user.name}</div>
+      <Link to="/users/$userId" params={{ userId: comment.user.id }}>
+        <UserAvatar user={comment.user} />
+      </Link>
       <time className="text-sm text-neutral-500">
         . {new Date(comment.createdAt).toLocaleDateString()}
       </time>

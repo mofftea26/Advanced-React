@@ -6,11 +6,13 @@ import {
   createTRPCQueryUtils,
   createTRPCReact,
   httpBatchLink,
+  TRPCClientError,
 } from "@trpc/react-query";
 import Spinner from "./features/shared/components/ui/Spinner";
 import { env } from "./lib/utils/env";
 import { routeTree } from "./routeTree.gen";
-
+import { ErrorComponent } from "./features/shared/components/ErrorComponent";
+import { NotFoundComponent } from "./features/shared/components/NotFoundComponent";
 // Initialize a new QueryClient instance for managing server state and caching
 export const queryClient = new QueryClient();
 
@@ -47,6 +49,8 @@ function createRouter() {
         <Spinner />
       </div>
     ),
+    defaultErrorComponent: ErrorComponent,
+    defaultNotFoundComponent: NotFoundComponent,
     // Wrapper component that provides TRPC and React Query context to all routes
     Wrap: function WrapComponent({ children }: { children: React.ReactNode }) {
       return (
@@ -70,4 +74,10 @@ declare module "@tanstack/react-router" {
   interface Register {
     router: ReturnType<typeof createRouter>;
   }
+}
+
+export function isTRPCClientError(
+  cause: unknown,
+): cause is TRPCClientError<AppRouter> {
+  return cause instanceof TRPCClientError;
 }

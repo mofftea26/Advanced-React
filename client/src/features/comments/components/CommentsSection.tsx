@@ -2,6 +2,7 @@ import { trpc } from "@/router";
 import { Experience } from "@advanced-react/server/database/schema";
 import { CommentsList } from "./CommentsList";
 import { CommentCreateForm } from "./CommentCreateForm";
+import { ErrorComponent } from "@/features/shared/components/ErrorComponent";
 type CommentsSectionProps = {
   experienceId: Experience["id"];
   commentsCount: number;
@@ -19,7 +20,7 @@ export function CommentsSection({
   );
 
   if (commentsQuery.error) {
-    return <div>Error loading comments</div>;
+    return <ErrorComponent />;
   }
 
   return (
