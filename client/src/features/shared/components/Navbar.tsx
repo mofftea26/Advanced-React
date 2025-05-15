@@ -1,5 +1,5 @@
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
-import { Home, Search, User } from "lucide-react";
+import { Home, Search, User, Settings } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "./ui/Link";
 export default function Navigation() {
@@ -28,7 +28,15 @@ export default function Navigation() {
         Search
       </Link>
       {currentUser ? (
-        <div>Signed In</div>
+        <Link
+          to="/settings"
+          variant="ghost"
+          className={navLinkClassName}
+          activeProps={{ className: activeLinkClassName }}
+        >
+          <Settings className="h-6 w-6" />
+          Settings
+        </Link>
       ) : (
         <Link
           to="/login"
