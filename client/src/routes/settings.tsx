@@ -3,6 +3,9 @@ import Card from "@/features/shared/components/ui/Card";
 import { useToast } from "@/features/shared/hooks/useToast";
 import { router, trpc } from "@/router";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { ChangeEmailDialog } from "@/features/auth/components/ChangeEmailDialog";
+import { ChangePasswordDialog } from "@/features/auth/components/ChangePasswordDialog";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -17,6 +20,7 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const utils = trpc.useUtils();
   const { toast } = useToast();
+  const { currentUser } = useCurrentUser();
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: async () => {
@@ -36,6 +40,14 @@ function SettingsPage() {
   });
 
   const settings = [
+    {
+      label: currentUser?.email ?? "Email",
+      component: <ChangeEmailDialog />,
+    },
+    {
+      label: "Change password",
+      component: <ChangePasswordDialog />,
+    },
     {
       label: "Sign out of your account",
       component: (

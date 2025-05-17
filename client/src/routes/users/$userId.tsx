@@ -9,6 +9,9 @@ import Card from "@/features/shared/components/ui/Card";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { UserForDetails } from "@/features/users/types";
 import { isTRPCClientError, trpc } from "@/router";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { UserEditDialog } from "@/features/users/components/UserEditDialog";
+import { User } from "@advanced-react/server/database/schema";
 
 export const Route = createFileRoute("/users/$userId")({
   params: {
@@ -56,6 +59,7 @@ function UserPage() {
         {user.bio && (
           <p className="text-neutral-600 dark:text-neutral-400">{user.bio}</p>
         )}
+        <UserProfileButtons user={user} />
       </Card>
 
       <UserProfileHostStats user={user} />
@@ -90,4 +94,18 @@ function UserProfileHostStats({ user }: UserProfileHostStatsProps) {
       </div>
     </Card>
   );
+}
+
+type UserProfileButtonsProps = {
+  user: User;
+};
+
+function UserProfileButtons({ user }: UserProfileButtonsProps) {
+  const { currentUser } = useCurrentUser();
+  const isCurrentUser = currentUser?.id === user.id;
+
+  if (isCurrentUser) {
+    return <UserEditDialog user={user} />;
+  }
+  return null;
 }
