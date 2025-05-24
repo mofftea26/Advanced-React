@@ -13,7 +13,7 @@ import { z } from "zod";
 import { TextArea } from "@/features/shared/components/ui/TextArea";
 import { Button } from "@/features/shared/components/ui/Button";
 import { useToast } from "@/features/shared/hooks/useToast";
-
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 type CommentCreateFormProps = {
   experienceId: Experience["id"];
 };
@@ -30,7 +30,7 @@ export function CommentCreateForm({ experienceId }: CommentCreateFormProps) {
 
   const { toast } = useToast();
   const utils = trpc.useUtils();
-
+  const { currentUser } = useCurrentUser();
   const addCommentMutation = trpc.comments.add.useMutation({
     onSuccess: async ({ experienceId }) => {
       await Promise.all([
@@ -57,6 +57,16 @@ export function CommentCreateForm({ experienceId }: CommentCreateFormProps) {
       experienceId,
     });
   });
+
+  if (!currentUser) {
+    return (
+      <div className="flex items-center gap-2">
+        <p className="text-muted-foreground text-sm">
+          Please login to add a comment
+        </p>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
