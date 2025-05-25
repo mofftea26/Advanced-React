@@ -6,7 +6,7 @@ import { ExperienceForList } from "../types";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { ExperienceDeleteDialog } from "./ExperienceDeleteDialog";
-
+import { ExperienceAttendButton } from "./ExperienceAttendButton";
 type ExperienceCardProps = {
   experience: ExperienceForList;
 };
@@ -138,6 +138,14 @@ function ExperienceCardActionButtons({
     return <ExperienceCardOwnerButtons experience={experience} />;
   }
 
+  if (currentUser) {
+    return (
+      <ExperienceAttendButton
+        experienceId={experience.id}
+        isAttending={experience.isAttending}
+      />
+    );
+  }
   return null;
 }
 type ExperienceCardOwnerButtonsProps = Pick<ExperienceCardProps, "experience">;

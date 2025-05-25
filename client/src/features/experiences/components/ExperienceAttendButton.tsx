@@ -1,0 +1,35 @@
+import { Experience } from "@advanced-react/server/database/schema";
+import { useExperienceMutations } from "../hooks/useExperienceMutations";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { Button } from "@/features/shared/components/ui/Button";
+
+type ExperienceAttendButtonProps = {
+  experienceId: Experience["id"];
+  isAttending: boolean;
+};
+
+export function ExperienceAttendButton({
+  experienceId,
+  isAttending,
+}: ExperienceAttendButtonProps) {
+  const { currentUser } = useCurrentUser();
+  const { attendMutation, unattendMutation } = useExperienceMutations();
+  if (!currentUser) {
+    return null;
+  }
+  return (
+    <Button
+      variant={isAttending ? "outline" : "default"}
+      onClick={() => {
+        if (isAttending) {
+          unattendMutation.mutate({ id: experienceId });
+        } else {
+          attendMutation.mutate({ id: experienceId });
+        }
+      }}
+      disabled={attendMutation.isPending || unattendMutation.isPending}
+    >
+      {isAttending ? "Unattend" : "Attend"}
+    </Button>
+  );
+}
