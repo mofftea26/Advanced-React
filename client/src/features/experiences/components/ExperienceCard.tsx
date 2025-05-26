@@ -1,12 +1,12 @@
 import { Button } from "@/features/shared/components/ui/Button";
-import { Link } from "@tanstack/react-router";
-import { LinkIcon, MessageSquare } from "lucide-react";
+import { LinkIcon, MessageSquare, Users } from "lucide-react";
 import Card from "../../shared/components/ui/Card";
 import { ExperienceForList } from "../types";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { ExperienceDeleteDialog } from "./ExperienceDeleteDialog";
 import { ExperienceAttendButton } from "./ExperienceAttendButton";
+import Link from "@/features/shared/components/ui/Link";
 type ExperienceCardProps = {
   experience: ExperienceForList;
 };
@@ -111,7 +111,18 @@ function ExperienceCardMetricButtons({
   experience,
 }: ExperienceCardMetricButtonsProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-4">
+      <Button variant="link" asChild>
+        <Link
+          to="/experiences/$experienceId/attendees"
+          params={{ experienceId: experience.id }}
+          variant="ghost"
+        >
+          <Users className="h-5 w-5" />
+          <span>{experience.attendeesCount}</span>
+        </Link>
+      </Button>
+
       <Button variant="link" asChild>
         <Link
           to="/experiences/$experienceId"

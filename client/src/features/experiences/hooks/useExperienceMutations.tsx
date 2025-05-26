@@ -1,5 +1,5 @@
-import { Experience } from "@advanced-react/server/database/schema";
-
+import { Experience, User } from "@advanced-react/server/database/schema";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { useToast } from "@/features/shared/hooks/useToast";
 import { trpc } from "@/router";
 import { useParams, useSearch } from "@tanstack/react-router";
@@ -20,7 +20,7 @@ export function useExperienceMutations(
   const utils = trpc.useUtils();
   const { userId: pathUserId } = useParams({ strict: false });
   const { q: pathQ } = useSearch({ strict: false });
-
+  const { currentUser } = useCurrentUser();
   const editMutation = trpc.experiences.edit.useMutation({
     onSuccess: async ({ id }) => {
       await utils.experiences.byId.invalidate({ id });
@@ -69,10 +69,21 @@ export function useExperienceMutations(
 
   const attendMutation = trpc.experiences.attend.useMutation({
     onMutate: async ({ id }) => {
-      function updateExperience<T extends { isAttending: boolean }>(
-        oldData: T,
-      ) {
-        return { ...oldData, isAttending: true };
+      function updateExperience<
+        T extends {
+          isAttending: boolean;
+          attendeesCount: number;
+          attendees?: User[];
+        },
+      >(oldData: T) {
+        return {
+          ...oldData,
+          isAttending: true,
+          attendeesCount: oldData.attendeesCount + 1,
+          ...(oldData.attendees && {
+            attendees: [currentUser, ...oldData.attendees],
+          }),
+        };
       }
 
       await Promise.all([
@@ -184,10 +195,23 @@ export function useExperienceMutations(
 
   const unattendMutation = trpc.experiences.unattend.useMutation({
     onMutate: async ({ id }) => {
-      function updateExperience<T extends { isAttending: boolean }>(
-        oldData: T,
-      ) {
-        return { ...oldData, isAttending: false };
+      function updateExperience<
+        T extends {
+          isAttending: boolean;
+          attendeesCount: number;
+          attendees?: User[];
+        },
+      >(oldData: T) {
+        return {
+          ...oldData,
+          isAttending: false,
+          attendeesCount: oldData.attendeesCount - 1,
+          ...(oldData.attendees && {
+            attendees: oldData.attendees.filter(
+              (user) => user.id !== currentUser?.id,
+            ),
+          }),
+        };
       }
 
       await Promise.all([

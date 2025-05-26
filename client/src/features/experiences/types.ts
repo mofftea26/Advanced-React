@@ -11,11 +11,21 @@ type ExperienceWithCommentsCount = Experience & {
 type ExperienceWithUserContext = Experience & {
   isAttending: boolean;
 };
+export type ExperienceForAttendeesCount = Experience & {
+  attendeesCount: number;
+};
 
-export type ExperienceForList = ExperienceWithCommentsCount &
+export type ExperienceWithAttendees = Experience & {
+  attendees: User[];
+};
+export type ExperienceForList = ExperienceWithUser &
   ExperienceWithUserContext &
-  ExperienceWithUser;
+  ExperienceWithCommentsCount &
+  ExperienceForAttendeesCount;
 
 export type ExperienceForDetails = Experience &
+  ExperienceWithUser &
   ExperienceWithUserContext &
-  ExperienceWithCommentsCount;
+  ExperienceWithCommentsCount &
+  ExperienceForAttendeesCount &
+  ExperienceWithAttendees;
