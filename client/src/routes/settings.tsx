@@ -25,7 +25,9 @@ function SettingsPage() {
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: async () => {
       await utils.auth.currentUser.invalidate();
+      await utils.notifications.unreadCount.reset();
       router.navigate({ to: "/login" });
+
       toast({
         title: "Logged out",
         description: "You have been logged out of your account",
