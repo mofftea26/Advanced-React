@@ -7,6 +7,7 @@ import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { ExperienceDeleteDialog } from "./ExperienceDeleteDialog";
 import { router } from "@/router";
 import { UserAvatarList } from "@/features/users/components/UserAvatarList";
+import TagList from "@/features/tags/components/TagList";
 type ExperienceDetailsProps = {
   experience: ExperienceForDetails;
 };
@@ -18,6 +19,7 @@ export function ExperienceDetails({ experience }: ExperienceDetailsProps) {
       <div className="space-y-4 p-4">
         <ExperienceDetailsHeader experience={experience} />
         <ExperienceDetailsContent experience={experience} />
+        <ExperienceCardTags experience={experience} />
         <ExperienceDetailsMeta experience={experience} />
         <ExperienceDetailsActionButtons experience={experience} />
         <div className="border-t-2 border-neutral-200 pt-4 dark:border-neutral-800">
@@ -63,7 +65,11 @@ function ExperienceDetailsContent({
     </p>
   );
 }
+type ExperienceCardTagsProps = Pick<ExperienceDetailsProps, "experience">;
 
+function ExperienceCardTags({ experience }: ExperienceCardTagsProps) {
+  return <TagList tags={experience.tags} />;
+}
 type ExperienceDetailsMetaProps = Pick<ExperienceDetailsProps, "experience">;
 
 function ExperienceDetailsMeta({ experience }: ExperienceDetailsMetaProps) {

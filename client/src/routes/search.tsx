@@ -7,6 +7,9 @@ import { ExperienceFilters } from "@/features/experiences/components/ExperienceF
 export const Route = createFileRoute("/search")({
   component: SearchPage,
   validateSearch: experienceFiltersSchema,
+  loader: async ({ context: { trpcQueryUtils } }) => {
+    await trpcQueryUtils.tags.list.ensureData();
+  },
 });
 
 function SearchPage() {
@@ -15,9 +18,9 @@ function SearchPage() {
 
   const experiencesQuery = trpc.experiences.search.useInfiniteQuery(search, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: !!search.q,
+    enabled: !!search.q || !!search.tags,
   });
-
+  const [tags] = trpc.tags.list.useSuspenseQuery();
   return (
     <main>
       <ExperienceFilters
@@ -27,6 +30,7 @@ function SearchPage() {
           });
         }}
         initialFilter={search}
+        tags={tags}
       />
       <InfiniteScroll
         onLoadMore={!!search.q ? experiencesQuery.fetchNextPage : undefined}
