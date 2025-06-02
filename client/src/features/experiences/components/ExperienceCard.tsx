@@ -7,6 +7,7 @@ import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { ExperienceDeleteDialog } from "./ExperienceDeleteDialog";
 import { ExperienceAttendButton } from "./ExperienceAttendButton";
 import Link from "@/features/shared/components/ui/Link";
+import { ExperienceFavoriteButton } from "./FavoriteButton";
 type ExperienceCardProps = {
   experience: ExperienceForList;
 };
@@ -112,6 +113,11 @@ function ExperienceCardMetricButtons({
 }: ExperienceCardMetricButtonsProps) {
   return (
     <div className="flex items-center gap-4">
+      <ExperienceFavoriteButton
+        experienceId={experience.id}
+        isFavorited={experience.isFavorited}
+        favoriteCount={experience.favoritesCount}
+      />
       <Button variant="link" asChild>
         <Link
           to="/experiences/$experienceId/attendees"
