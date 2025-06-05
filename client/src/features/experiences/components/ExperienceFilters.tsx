@@ -15,6 +15,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/features/shared/components/ui/Button";
 import { Tag } from "@advanced-react/server/database/schema";
 import { MultiSelect } from "@/features/shared/components/ui/MultiSelect";
+import { DateTimePicker } from "@/features/shared/components/ui/DateTimePicker";
 type ExperienceFiltersProps = {
   onFiltersChange: (filters: ExperienceFilterParams) => void;
   initialFilter?: ExperienceFilterParams;
@@ -40,29 +41,47 @@ export function ExperienceFilters({
     if (values.tags) {
       filters.tags = values.tags;
     }
+
+    if (values.scheduledAt) {
+      filters.scheduledAt = values.scheduledAt;
+    }
     onFiltersChange(filters);
   });
   return (
     <Form {...form}>
       <Card>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <FormField
-            control={form.control}
-            name="q"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="search"
-                    value={field.value ?? ""}
-                    placeholder="Search experiences..."
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex flex-row gap-8">
+            <FormField
+              control={form.control}
+              name="q"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="search"
+                      value={field.value ?? ""}
+                      placeholder="Search experiences..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="scheduledAt"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <DateTimePicker {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="tags"
