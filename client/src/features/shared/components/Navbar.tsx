@@ -1,8 +1,9 @@
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
-import { Home, Search, User, Settings, Bell, Heart } from "lucide-react";
+import { Home, Search, User, Settings, Bell, Heart, Plus } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "./ui/Link";
 import { trpc } from "@/router";
+import { Button } from "./ui/Button";
 export default function Navigation() {
   const { currentUser } = useCurrentUser();
   const unreadCountQuery = trpc.notifications.unreadCount.useQuery(undefined, {
@@ -93,7 +94,19 @@ export default function Navigation() {
           Sign In
         </Link>
       )}
-      <ThemeToggle />
+
+      {currentUser && (
+        <Button asChild>
+          <Link
+            to="/experiences/new"
+            variant="ghost"
+            className={navLinkClassName}
+          >
+            <Plus className="h-6 w-6" />
+            Create Experience
+          </Link>
+        </Button>
+      )}
     </nav>
   );
 }

@@ -5,11 +5,17 @@ import { trpc } from "@/router";
 import { useParams, useSearch } from "@tanstack/react-router";
 
 type ExperienceMutationsOptions = {
+  add?: {
+    onSuccess?: (id: Experience["id"]) => void;
+  };
   edit?: {
     onSuccess?: (id: Experience["id"]) => void;
   };
   delete?: {
     onSuccess?: (id: Experience["id"]) => void;
+  };
+  kick?: {
+    onSuccess?: (experienceId: Experience["id"]) => void;
   };
 };
 
@@ -24,6 +30,24 @@ export function useExperienceMutations(
   const { tags: pathTags } = useSearch({ strict: false });
   const { scheduledAt: pathScheduledAt } = useSearch({ strict: false });
   const { currentUser } = useCurrentUser();
+
+  const addMutation = trpc.experiences.add.useMutation({
+    onSuccess: async ({ id }) => {
+      toast({
+        title: "Experience created",
+        description: "Your experience has been created",
+      });
+
+      options.add?.onSuccess?.(id);
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to create experience",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const editMutation = trpc.experiences.edit.useMutation({
     onSuccess: async ({ id }) => {
@@ -817,12 +841,66 @@ export function useExperienceMutations(
     },
   });
 
+  const kickMutation = trpc.experiences.kickAttendee.useMutation({
+    onMutate: async ({ experienceId, userId }) => {
+      await utils.users.experienceAttendees.cancel({ experienceId });
+
+      const previousData = {
+        experienceAttendees: utils.users.experienceAttendees.getInfiniteData({
+          experienceId,
+        }),
+      };
+
+      utils.users.experienceAttendees.setInfiniteData(
+        { experienceId },
+        (oldData) => {
+          if (!oldData) {
+            return;
+          }
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => ({
+              ...page,
+              attendees: page.attendees.filter((a) => a.id !== userId),
+              attendeesCount: Math.max(0, page.attendeesCount - 1),
+            })),
+          };
+        },
+      );
+
+      toast({
+        title: "Attendee kicked",
+        description: "The attendee has been kicked from the experience",
+      });
+
+      return { previousData };
+    },
+    onSuccess: (_, { experienceId }) => {
+      options.kick?.onSuccess?.(experienceId);
+    },
+    onError: (error, { experienceId }, context) => {
+      utils.users.experienceAttendees.setInfiniteData(
+        { experienceId },
+        context?.previousData.experienceAttendees,
+      );
+
+      toast({
+        title: "Failed to kick attendee",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
+    addMutation,
     editMutation,
     deleteMutation,
     attendMutation,
     unattendMutation,
     favoriteMutation,
     unfavoriteMutation,
+    kickMutation,
   };
 }

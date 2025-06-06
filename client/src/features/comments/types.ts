@@ -11,10 +11,22 @@ type CommentWithUser = Comment & {
 type CommentWithExperience = Comment & {
   experience: Experience;
 };
+type CommentWithUserContext = Comment & {
+  isLiked: boolean;
+};
 
-export type CommentForList = CommentWithUser & CommentWithExperience;
+type CommentWithLikesCount = Comment & {
+  likesCount: number;
+};
+
+export type CommentForList = CommentWithUser &
+  CommentWithExperience &
+  CommentWithUserContext &
+  CommentWithLikesCount;
 
 export type CommentOptimistic = CommentWithUser &
-  CommentWithExperience & {
+  CommentWithExperience &
+  CommentWithUserContext &
+  CommentWithLikesCount & {
     optimistic: true;
   };

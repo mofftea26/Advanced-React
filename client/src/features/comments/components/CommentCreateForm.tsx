@@ -63,11 +63,12 @@ export function CommentCreateForm({ experience }: CommentCreateFormProps) {
         experienceId,
         user: currentUser,
         experience,
+        isLiked: false,
+        likesCount: 0,
       };
 
       utils.comments.byExperienceId.setData(
         { experienceId: experience.id },
-        // @ts-expect-error - TODO: fix this
         (oldData) => {
           if (!oldData) {
             return;

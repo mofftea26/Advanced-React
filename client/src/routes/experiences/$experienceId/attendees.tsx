@@ -1,4 +1,6 @@
 import { InfiniteScroll } from "@/features/shared/components/InfiniteScroll";
+import { ExperienceKickButton } from "@/features/experiences/components/ExperienceKickButton";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { UserFollowButton } from "@/features/users/components/UserFollowButton";
 import { UserList } from "@/features/users/components/UserList";
 import { isTRPCClientError, trpc } from "@/router";
@@ -33,6 +35,7 @@ export const Route = createFileRoute("/experiences/$experienceId/attendees")({
 
 function ExperienceAttendees() {
   const { experienceId } = Route.useParams();
+  const { currentUser } = useCurrentUser();
 
   const [experience] = trpc.experiences.byId.useSuspenseQuery({
     id: experienceId,
@@ -46,6 +49,7 @@ function ExperienceAttendees() {
       },
     );
 
+  const isOwner = currentUser?.id === experience.userId;
   const totalAttendees = pages[0].attendeesCount;
 
   return (
@@ -58,10 +62,18 @@ function ExperienceAttendees() {
             users={pages.flatMap((page) => page.attendees)}
             isLoading={attendeesQuery.isFetchingNextPage}
             rightComponent={(user) => (
-              <UserFollowButton
-                targetUserId={user.id}
-                isFollowing={user.isFollowing}
-              />
+              <div className="flex items-center gap-4">
+                <UserFollowButton
+                  targetUserId={user.id}
+                  isFollowing={user.isFollowing}
+                />
+                {isOwner && (
+                  <ExperienceKickButton
+                    experienceId={experienceId}
+                    userId={user.id}
+                  />
+                )}
+              </div>
             )}
           />
         </InfiniteScroll>

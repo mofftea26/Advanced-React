@@ -16,6 +16,7 @@ import { useToast } from "@/features/shared/hooks/useToast";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { CommentLikeButton } from "./CommentLikeButton";
 type CommentCardProps = {
   comment: CommentForList;
 };
@@ -29,6 +30,7 @@ export function CommentCard({ comment }: CommentCardProps) {
     <Card className="space-y-4">
       <CommentCardHeader comment={comment} />
       <CommentCardContent comment={comment} />
+      <CommentCardMetricButtons comment={comment} />
       <CommentCardButtons setIsEditing={setIsEditing} comment={comment} />
     </Card>
   );
@@ -190,5 +192,18 @@ function CommentCardButtons({
         </Dialog>
       )}
     </div>
+  );
+}
+
+type CommentCardMetricButtonsProps = Pick<CommentCardProps, "comment">;
+
+function CommentCardMetricButtons({ comment }: CommentCardMetricButtonsProps) {
+  return (
+    <CommentLikeButton
+      commentId={comment.id}
+      isLiked={comment.isLiked}
+      likesCount={comment.likesCount}
+      disabled={(comment as CommentOptimistic).optimistic}
+    />
   );
 }

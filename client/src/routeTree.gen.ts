@@ -19,6 +19,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as NotificationsIndexImport } from './routes/notifications/index'
 import { Route as FavoritesIndexImport } from './routes/favorites/index'
 import { Route as TagsTagIdImport } from './routes/tags/$tagId'
+import { Route as ExperiencesNewImport } from './routes/experiences/new'
 import { Route as UsersUserIdIndexImport } from './routes/users/$userId/index'
 import { Route as ExperiencesExperienceIdIndexImport } from './routes/experiences/$experienceId/index'
 import { Route as UsersUserIdFollowingImport } from './routes/users/$userId/following'
@@ -73,6 +74,12 @@ const FavoritesIndexRoute = FavoritesIndexImport.update({
 const TagsTagIdRoute = TagsTagIdImport.update({
   id: '/tags/$tagId',
   path: '/tags/$tagId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ExperiencesNewRoute = ExperiencesNewImport.update({
+  id: '/experiences/new',
+  path: '/experiences/new',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -154,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
+    '/experiences/new': {
+      id: '/experiences/new'
+      path: '/experiences/new'
+      fullPath: '/experiences/new'
+      preLoaderRoute: typeof ExperiencesNewImport
+      parentRoute: typeof rootRoute
+    }
     '/tags/$tagId': {
       id: '/tags/$tagId'
       path: '/tags/$tagId'
@@ -228,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/experiences/new': typeof ExperiencesNewRoute
   '/tags/$tagId': typeof TagsTagIdRoute
   '/favorites': typeof FavoritesIndexRoute
   '/notifications': typeof NotificationsIndexRoute
@@ -245,6 +260,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/experiences/new': typeof ExperiencesNewRoute
   '/tags/$tagId': typeof TagsTagIdRoute
   '/favorites': typeof FavoritesIndexRoute
   '/notifications': typeof NotificationsIndexRoute
@@ -263,6 +279,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/experiences/new': typeof ExperiencesNewRoute
   '/tags/$tagId': typeof TagsTagIdRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/notifications/': typeof NotificationsIndexRoute
@@ -282,6 +299,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/search'
     | '/settings'
+    | '/experiences/new'
     | '/tags/$tagId'
     | '/favorites'
     | '/notifications'
@@ -298,6 +316,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/search'
     | '/settings'
+    | '/experiences/new'
     | '/tags/$tagId'
     | '/favorites'
     | '/notifications'
@@ -314,6 +333,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/search'
     | '/settings'
+    | '/experiences/new'
     | '/tags/$tagId'
     | '/favorites/'
     | '/notifications/'
@@ -332,6 +352,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
+  ExperiencesNewRoute: typeof ExperiencesNewRoute
   TagsTagIdRoute: typeof TagsTagIdRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
   NotificationsIndexRoute: typeof NotificationsIndexRoute
@@ -349,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  ExperiencesNewRoute: ExperiencesNewRoute,
   TagsTagIdRoute: TagsTagIdRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
   NotificationsIndexRoute: NotificationsIndexRoute,
@@ -375,6 +397,7 @@ export const routeTree = rootRoute
         "/register",
         "/search",
         "/settings",
+        "/experiences/new",
         "/tags/$tagId",
         "/favorites/",
         "/notifications/",
@@ -400,6 +423,9 @@ export const routeTree = rootRoute
     },
     "/settings": {
       "filePath": "settings.tsx"
+    },
+    "/experiences/new": {
+      "filePath": "experiences/new.tsx"
     },
     "/tags/$tagId": {
       "filePath": "tags/$tagId.tsx"
